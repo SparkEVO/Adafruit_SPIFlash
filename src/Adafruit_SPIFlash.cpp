@@ -110,6 +110,18 @@ bool Adafruit_SPIFlash::readSector(uint32_t block, uint8_t *dst) {
   }
 }
 
+bool Adafruit_SPIFlash::readAddress(uint32_t addr, uint8_t *dst, size_t size) {
+  SPIFLASH_LOG(block, 1);
+
+  if (_cache) {
+    return _cache->read(this, addr, dst,
+                        size);
+  } else {
+    // FRAM does not need caching
+    return this->readBuffer(addr, dst, size) > 0;
+  }
+}
+
 bool Adafruit_SPIFlash::syncDevice() {
   SPIFLASH_LOG(0, 0);
 
@@ -129,6 +141,16 @@ bool Adafruit_SPIFlash::writeSector(uint32_t block, const uint8_t *src) {
   } else {
     return this->writeBuffer(block * LOGICAL_BLOCK_SIZE, src,
                              LOGICAL_BLOCK_SIZE) > 0;
+  }
+}
+
+bool Adafruit_SPIFlash::writeAddress(uint32_t addr, const uint8_t *src, size_t size) {
+  SPIFLASH_LOG(block, 1);
+
+  if (_cache) {
+    return _cache->write(this, addr, src, size);
+  } else {
+    return this->writeBuffer(addr, src, size) > 0;
   }
 }
 

@@ -383,6 +383,29 @@ bool Adafruit_SPIFlashBase::eraseBlock(uint32_t blockNumber) {
   return ret;
 }
 
+bool Adafruit_SPIFlashBase::eraseAddress(uint32_t addr) {
+  if (!_flash_dev) {
+    return false;
+  }
+
+  // skip erase for fram
+  if (_flash_dev->is_fram) {
+    return true;
+  }
+
+  _indicator_on();
+
+  // Before we erase the sector we need to wait for any writes to finish
+  waitUntilReady();
+  writeEnable();
+
+  bool const ret = _trans->eraseCommand(SFLASH_CMD_ERASE_BLOCK, addr);
+
+  _indicator_off();
+
+  return ret;
+}
+
 bool Adafruit_SPIFlashBase::eraseChip(void) {
   if (!_flash_dev) {
     return false;

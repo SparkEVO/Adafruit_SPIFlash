@@ -65,6 +65,7 @@ public:
 
   bool eraseSector(uint32_t sectorNumber);
   bool eraseBlock(uint32_t blockNumber);
+  bool eraseAddress(uint32_t addr);
   bool eraseChip(void);
 
   // Helper
