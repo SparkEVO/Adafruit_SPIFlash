@@ -77,10 +77,8 @@ public:
   virtual bool syncDevice();
 
   virtual bool readSector(uint32_t block, uint8_t *dst);
-  virtual bool readAddress(uint32_t addr, uint8_t *dst, size_t size);
   virtual bool readSectors(uint32_t block, uint8_t *dst, size_t ns);
   virtual bool writeSector(uint32_t block, const uint8_t *src);
-  virtual bool writeAddress(uint32_t addr, const uint8_t *src, size_t size);
   virtual bool writeSectors(uint32_t block, const uint8_t *src, size_t ns);
 
   // SdFat v1 BaseBlockDRiver API for backward-compatible
