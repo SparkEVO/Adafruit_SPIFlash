@@ -93,13 +93,16 @@ static const SPIFlash_Device_t possible_devices[] = {
     GD25Q16C, GD25Q32C, GD25Q64C, S25FL116K, S25FL216K,
 
     // Only a handful of production run
-    W25Q16FW, W25Q64JV_IQ,
+    W25Q16FW,
+
+    // Flash breakout
+    W25Q16JV_IQ, W25Q32JV_IQ, W25Q64JV_IQ, W25Q128JV_SQ, W25Q128JV_PM
 
     // Fujitsu FRAM
     MB85RS64V, MB85RS1MT, MB85RS2MTA, MB85RS4MT,
 
     // Other common flash devices
-    W25Q16JV_IQ, W25Q32JV_IQ, AT25SF041, AT25DF081A, W25Q128JV_PM, W25Q128JV_SQ};
+    AT25SF041, AT25DF081A};
 
 /// Flash device list count
 enum {
@@ -377,29 +380,6 @@ bool Adafruit_SPIFlashBase::eraseBlock(uint32_t blockNumber) {
 
   bool const ret = _trans->eraseCommand(SFLASH_CMD_ERASE_BLOCK,
                                         blockNumber * SFLASH_BLOCK_SIZE);
-
-  _indicator_off();
-
-  return ret;
-}
-
-bool Adafruit_SPIFlashBase::eraseAddress(uint32_t addr) {
-  if (!_flash_dev) {
-    return false;
-  }
-
-  // skip erase for fram
-  if (_flash_dev->is_fram) {
-    return true;
-  }
-
-  _indicator_on();
-
-  // Before we erase the sector we need to wait for any writes to finish
-  waitUntilReady();
-  writeEnable();
-
-  bool const ret = _trans->eraseCommand(SFLASH_CMD_ERASE_BLOCK, addr);
 
   _indicator_off();
 
